@@ -10,12 +10,13 @@
 
 > **Homi** helps people find places to live with natural-language search, smart filters, and a clean, fast UI.
 
-- **Live**: _coming soon_  
+- **Live**: _coming soon_
 - **Stack**: Next.js (App Router) · React · TypeScript · Tailwind · Supabase (Postgres/Auth) · OpenAI
 
 ---
 
 ## Features 🚀
+
 - **Natural-language search** (AI query → structured filters)
 - **Fast browse & filter** (debounced search, keyboard nav, pagination)
 - **Saved searches & favorites** (email updates optional)
@@ -33,3 +34,4 @@ cd homi-app
 npm i
 cp .env.example .env.local
 npm run dev
+```
