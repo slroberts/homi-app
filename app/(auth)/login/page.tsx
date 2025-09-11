@@ -65,7 +65,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section aria-label="Sign in" className="flex h-screen items-center justify-center p-4">
+    <section aria-label="Sign in" className="flex h-full items-center justify-center p-4">
       {sent ? (
         <EmailOtpForm email={lastEmail} />
       ) : (
