@@ -45,7 +45,10 @@ jest.mock('@/utils/supabase/client', () => ({
 // Minimal Radix Sheet mock with controllable open/close
 jest.mock('@/components/ui/sheet', () => {
   const { createContext, useContext, cloneElement, Children } = React;
-  const Ctx = createContext({ open: false, onOpenChange: (_: boolean) => {} });
+  const Ctx = createContext<{ open: boolean; onOpenChange: (open: boolean) => void }>({
+    open: false,
+    onOpenChange: () => {},
+  });
 
   function Sheet({ open, onOpenChange, children }: any) {
     return <Ctx.Provider value={{ open, onOpenChange }}>{children}</Ctx.Provider>;
