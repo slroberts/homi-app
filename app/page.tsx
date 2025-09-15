@@ -1,83 +1,157 @@
+'use client';
+
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Brain, Compass, MessageSquareText } from 'lucide-react';
 import Image from 'next/image';
+import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const formSchema = z.object({
+  query: z
+    .string()
+    .min(2, { message: 'Tell us a bit more.' })
+    .max(100, { message: 'Keep it under 100 characters.' }),
+});
 
 export default function Home() {
-  return (
-    <div className="grid h-full grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-center font-mono text-sm/6 sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{' '}
-            <code className="rounded bg-black/[.05] px-1 py-0.5 font-mono font-semibold dark:bg-white/[.06]">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">Save and see your changes instantly.</li>
-        </ol>
+  const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: { query: '' },
+    resolver: zodResolver(formSchema),
+    mode: 'onSubmit',
+  });
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="bg-foreground text-background flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-transparent px-4 text-sm font-medium transition-colors hover:bg-[#383838] sm:h-12 sm:w-auto sm:px-5 sm:text-base dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    console.log(values);
+    // TODO: wire to /api/ai-chat and redirect
+    // post to api route - e.g. /api/ai-chat
+    // then redirect to ai chat page.
+  }
+
+  return (
+    <section className="relative min-h-[100svh] overflow-visible bg-cover bg-center p-8 font-sans sm:min-h-dvh sm:p-20 md:overflow-hidden">
+      <Image
+        src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2800&auto=format&fit=crop&ixlib=rb-4.1.0"
+        alt=""
+        aria-hidden="true"
+        fill
+        priority
+        sizes="100vw"
+        className="absolute inset-0 -z-10 object-cover"
+      />
+      <div
+        className="from-primary/40 absolute inset-0 -z-10 bg-gradient-to-b to-black/95"
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-center leading-snug md:items-center md:leading-tight">
+        <h1 className="text-background text-[clamp(2.25rem,4.5vw,8rem)] font-semibold tracking-tight">
+          Your home, defined.
+        </h1>
+
+        <p className="text-background mt-2 text-[clamp(1.25rem,2vw,4rem)]">
+          We&apos;ll find it — not just by filters, but by your vibe.
+        </p>
+
+        <ul role="list" className="mt-6 flex flex-wrap gap-2">
+          {['Must-haves', 'Deal-breakers', 'Budget', 'Commute time', 'Lifestyle'].map((v) => (
+            <li key={v}>
+              <span className="text-background/90 inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#F78154]/8 px-3 py-1 text-sm backdrop-blur-sm transition-colors md:text-base">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#F78154]/80" aria-hidden />
+                {v}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="mt-12 flex w-full max-w-2xl flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4"
+            aria-describedby="query-help"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <FormField
+              control={form.control}
+              name="query"
+              render={({ field }) => (
+                <FormItem className="flex-1">
+                  <FormLabel className="sr-only" htmlFor="query">
+                    What are you looking for?
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      id="query"
+                      type="text"
+                      {...field}
+                      maxLength={100}
+                      placeholder="e.g. 2 bed in SF under $4k with parking and a view of the bay 🙂"
+                      autoComplete="off"
+                      enterKeyHint="search"
+                      aria-invalid={!!form.formState.errors.query}
+                      aria-describedby={`query-help${form.formState.errors.query ? ' query-error' : ''}`}
+                      className="bg-background placeholder:text-primary/40 w-full max-w-xl truncate border-0 py-6 font-medium"
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-            Deploy now
-          </a>
-          <a
-            className="flex h-10 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:border-transparent hover:bg-[#f2f2f2] sm:h-12 sm:w-auto sm:px-5 sm:text-base md:w-[158px] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+
+            <Button
+              type="submit"
+              size="lg"
+              className="shrink-0 bg-gradient-to-bl from-[#F78154] to-[#fb6a2c] py-6 text-sm font-semibold tracking-wide hover:from-orange-600 hover:to-amber-500"
+            >
+              Try Homi
+              <ArrowRight className="h-5 w-5" aria-hidden="true" />
+            </Button>
+          </form>
+        </Form>
+        <p id="query-help" className="sr-only" aria-live="polite">
+          Describe beds, price, neighborhood, vibe, or must-haves.
+        </p>
+
+        <section
+          className="mx-auto mt-8 grid w-full max-w-6xl gap-4 sm:mt-16 md:grid-cols-3"
+          aria-labelledby="how-it-works"
         >
-          <Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <h2 id="how-it-works" className="sr-only">
+            How it works
+          </h2>
+
+          {[
+            {
+              t: 'Set your vibe',
+              d: 'Commute, pets, sunlight, weekend plans.',
+              Icon: MessageSquareText,
+            },
+            { t: 'Find your fit', d: 'AI narrows to places that feel right.', Icon: Brain },
+            { t: 'Tour confidently', d: 'Shortlist with reasons you can compare.', Icon: Compass },
+          ].map(({ t, d, Icon }, i) => (
+            <article
+              key={t}
+              className="text-background/90 rounded-xl p-4"
+              aria-labelledby={`step-${i}`}
+            >
+              <div className="flex items-start gap-4">
+                <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-[#F78154]/8 backdrop-blur-sm">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div className="md:space-y-1">
+                  <h3
+                    id={`step-${i}`}
+                    className="text-[clamp(1.25rem,1.3vw,2.75rem)] font-semibold"
+                  >
+                    {t}
+                  </h3>
+                  <p className="text-[clamp(1rem,1.2vw,2rem)] opacity-90">{d}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </section>
+      </div>
+    </section>
   );
 }
